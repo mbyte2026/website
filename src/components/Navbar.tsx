@@ -1,20 +1,36 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import Logo from './Logo';
 
+// Pages already restyled to the light theme.
+const LIGHT_ROUTES = ['/'];
+
+// Sections on the homepage.
+const LINKS = [
+  { to: '/#how-it-works', label: 'How it works' },
+  { to: '/#platform',     label: 'Platform' },
+  { to: '/#demos',        label: 'Demos' },
+  { to: '/#contact',      label: 'Contact' },
+];
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const close = () => setIsMenuOpen(false);
+  const light = LIGHT_ROUTES.includes(useLocation().pathname);
 
   return (
-    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-xl px-4">
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-4">
       <motion.nav
         initial={{ opacity: 0, y: -24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="flex items-center justify-between gap-4 px-5 py-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+        className={`flex items-center justify-between gap-4 px-5 py-3 rounded-full backdrop-blur-xl border ${
+          light
+            ? 'bg-white/80 border-neutral-200 shadow-[0_8px_32px_rgba(0,0,0,0.06)]'
+            : 'bg-black/40 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]'
+        }`}
       >
         {/* Logo — always routes to "/" */}
         <Link
@@ -23,22 +39,28 @@ export default function Navbar() {
           className="flex items-center gap-2.5 group shrink-0 focus:outline-none"
           aria-label="Go to home"
         >
-          <Logo className="w-12 h-12 group-hover:scale-110 transition-transform duration-300" />
-          <span className="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+          <Logo light={light} className={`${light ? 'w-9 h-9' : 'w-12 h-12'} group-hover:scale-110 transition-transform duration-300`} />
+          <span
+            className={`text-lg font-extrabold tracking-tight ${
+              light ? 'text-neutral-950' : 'bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60'
+            }`}
+          >
             Mbyte
           </span>
         </Link>
 
         {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-1">
-          <NavPill to="/autopilot">Autopilot</NavPill>
-          <NavPill to="/docs">Docs</NavPill>
-          <NavPill to="/about">About</NavPill>
+          {LINKS.map(l => (
+            <NavPill key={l.to} to={l.to} light={light}>{l.label}</NavPill>
+          ))}
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden p-1.5 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          className={`md:hidden p-1.5 rounded-full transition-all ${
+            light ? 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100' : 'text-white/60 hover:text-white hover:bg-white/10'
+          }`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -55,12 +77,16 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="mt-2 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden"
+            className={`mt-2 rounded-2xl backdrop-blur-xl border overflow-hidden ${
+              light
+                ? 'bg-white/95 border-neutral-200 shadow-[0_8px_32px_rgba(0,0,0,0.08)]'
+                : 'bg-black/70 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+            }`}
           >
             <div className="flex flex-col p-2 gap-1">
-              <MobileNavLink to="/autopilot" onClick={close}>Autopilot</MobileNavLink>
-              <MobileNavLink to="/docs"      onClick={close}>Documentation</MobileNavLink>
-              <MobileNavLink to="/about"     onClick={close}>About Us</MobileNavLink>
+              {LINKS.map(l => (
+                <MobileNavLink key={l.to} to={l.to} onClick={close} light={light}>{l.label}</MobileNavLink>
+              ))}
             </div>
           </motion.div>
         )}
@@ -71,43 +97,32 @@ export default function Navbar() {
 
 /* ─── Sub-components ─────────────────────────────────────────────────────── */
 
-function NavPill({ to, children }: { to: string; children: React.ReactNode }) {
+function linkClass(light: boolean) {
+  return light ? 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100' : 'text-white/60 hover:text-white hover:bg-white/10';
+}
+
+function NavPill({ to, light, children }: { to: string; light: boolean; children: React.ReactNode }) {
   return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 ${
-          isActive
-            ? 'text-white bg-white/10'
-            : 'text-white/60 hover:text-white hover:bg-white/10'
-        }`
-      }
-    >
+    <Link to={to} className={`px-3.5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${linkClass(light)}`}>
       {children}
-    </NavLink>
+    </Link>
   );
 }
 
 function MobileNavLink({
   to,
   onClick,
+  light,
   children,
 }: {
   to: string;
   onClick: () => void;
+  light: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <NavLink
-      to={to}
-      onClick={onClick}
-      className={({ isActive }) =>
-        `px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-          isActive ? 'text-white bg-white/10' : 'text-white/70 hover:text-white hover:bg-white/10'
-        }`
-      }
-    >
+    <Link to={to} onClick={onClick} className={`px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${linkClass(light)}`}>
       {children}
-    </NavLink>
+    </Link>
   );
 }

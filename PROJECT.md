@@ -1,6 +1,6 @@
 # Mbyte Technologies — Project Reference
 
-> Snapshot of architecture, content, and integration details.  
+> Snapshot of architecture, content, and integration details.
 > Update this file whenever structural or strategic decisions change.
 
 ---
@@ -9,17 +9,19 @@
 
 | Field | Value |
 |---|---|
-| Name | Mbyte Technologies |
-| Email | mbyte2026@gmail.com |
-| Stage | Deep-tech startup — MVP in active development |
-| Slogan | "You build the body, we provide the brain." |
-| Dashboard (Voice PaaS) | https://dashboard.mbyte.my/ |
-| Logo | `/public/img_rb.png` |
+| Name | Mbyte Technologies Sdn Bhd |
+| Contact email (site) | reagan@mbyte.my — set in `src/components/home/shared.tsx` |
+| Stage | Pre-seed · TRL 4 · Pahang, Malaysia |
+| Positioning | Self-driving indoor mobility — one navigation stack (Map → Detect → Navigate → Move) for many bodies |
+| Logo (light) | `/public/logo-mark.png` (cropped from `logo(white).jpg`) |
+| Logo (dark, legacy docs) | `/public/img_rb.png` |
 
-### Strategic Position (Post-Pivot)
+### Strategic Position (Oct 2026)
 
-**Flagship:** Edge AI autonomous wheelchair — indoor autopilot systems for hospitals, airports, and malls.  
-**Secondary:** Voice PaaS (mbyte_audio_robot) — cloud AI infrastructure for any voice-enabled robot or connected device.
+**Focus:** selling the self-driving system. First body: autonomous wheelchair. Next: airport passenger pod, mall shopping pod.
+**Legacy:** Voice PaaS (mbyte_audio_robot) — docs kept online at `/docs` for existing users, hidden from the navbar.
+
+**Never put on the public site:** funding ask, investor returns, pricing/unit cost/margins, TAM/SAM/SOM, named target facilities or pilot partners (e.g. KPJ, KLIA), competitor names.
 
 ---
 
@@ -31,46 +33,24 @@
 | Language | TypeScript (`.tsx`) |
 | Styling | Tailwind CSS v4 (`@import "tailwindcss"`, `@theme` block) |
 | Animation | `motion/react` — import from `motion/react`, **not** `framer-motion` |
-| Routing | React Router DOM v6 (`BrowserRouter` in `main.tsx`) |
-| Icons | `lucide-react` for utility icons; custom inline SVGs for brand icons |
-| Fonts | Orbitron (headings) · Inter (body) — both via Google Fonts |
-| Forms | Formspree (`https://formspree.io/f/xnjynboe`) |
-| Env vars | Vite `VITE_` prefix, declared in `src/vite-env.d.ts` |
+| Routing | React Router DOM (`BrowserRouter` in `main.tsx`) |
+| Icons | `lucide-react` |
+| Fonts | Inter (everything on the homepage) · Orbitron (legacy docs pages only) |
 
-### Global CSS (`src/index.css`)
-
-```css
-@import "tailwindcss";
-
-@theme {
-  --font-orbitron: "Orbitron", ui-sans-serif, system-ui, sans-serif;
-  --color-brand-purple: #8b5cf6;
-}
-
-@layer base {
-  html { scroll-behavior: smooth; }
-}
-
-@keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-.cursor-blink { animation: cursor-blink 1.1s step-end infinite; }
-```
-
-### Recurring Style Patterns
+### Homepage Style (light, minimal)
 
 | Purpose | Classes / Values |
 |---|---|
-| Page background | `bg-black text-white` |
-| Accent colour | `#8b5cf6` / `violet-500` |
-| Glassmorphic card | `bg-white/[0.05] backdrop-blur-md border border-white/10 rounded-2xl` |
-| Active sidebar item | `bg-white/[0.08] text-white border-l-2 border-violet-500` |
-| Section top glow | `bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(139,92,246,0.09),transparent_70%)]` |
-| Section separator | `absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent` |
-| Orbitron heading | `style={{ fontFamily: 'var(--font-orbitron)' }}` |
-| Scroll reveal | `whileInView={{ opacity:1, y:0 }} viewport={{ once: true, margin: '-80px' }}` |
-| CTA button | `bg-gradient-to-br from-violet-500 to-purple-700 rounded-full shadow-[0_0_24px_rgba(139,92,246,0.35)]` |
+| Backgrounds | `bg-white`, alternating with `bg-[#f6f6f4]` |
+| Text | `text-neutral-950` headings, `text-neutral-500` body |
+| Accent (only one) | `violet-700` |
+| Headings | `font-semibold tracking-[-0.035em]` (h1 `-0.045em`) |
+| Small labels | `font-mono text-xs uppercase tracking-[0.16em]` (`Eyebrow`) |
+| Media frames | `rounded-2xl` / hero `rounded-[32px]` |
+| Buttons | `PrimaryButton` (black pill) · `SecondaryButton` (outline pill) |
+| Scroll reveal | `Reveal` component in `home/shared.tsx` |
+
+The navbar switches between light and dark per route (`LIGHT_ROUTES` in `Navbar.tsx`); the footer takes `variant="light" | "dark"`.
 
 ---
 
@@ -79,31 +59,31 @@
 ```
 mbyte---ai-robot-brain-paas/
 ├── public/
-│   ├── img_rb.png               # Company logo
-│   ├── hero_banner.mp4          # Landing page hero video
-│   ├── wiring_diagram2.jpeg     # Hardware wiring diagram (Pin Diagram docs)
-│   └── ELECTRIC_circuit.png     # Electric circuit diagram (Pin Diagram docs)
+│   ├── logo-mark.png            # Light-theme logo (navbar, footer, favicon)
+│   ├── hero-wheelchair.jpg      # Hero image (concept design render)
+│   ├── img_rb.png               # Dark logo (legacy docs pages)
+│   ├── wiring_diagram2.jpeg     # Pin Diagram docs
+│   └── ELECTRIC_circuit.png     # Pin Diagram docs
 ├── src/
-│   ├── main.tsx                 # Entry point — wraps App in BrowserRouter
-│   ├── App.tsx                  # Route definitions
-│   ├── index.css                # Tailwind v4 + Google Fonts + custom animations
-│   ├── vite-env.d.ts            # ImportMeta env type declarations
+│   ├── App.tsx                  # Routes (+ redirects for retired pages)
 │   ├── components/
-│   │   ├── Navbar.tsx           # Floating pill navbar (fixed, top-center)
-│   │   ├── Logo.tsx             # img_rb.png with violet drop-shadow
-│   │   ├── FlagshipMobility.tsx # [NEW] Autonomous wheelchair showcase section
-│   │   ├── CoreBrainModules.tsx # "The Unified Cognitive Layer" — Voice PaaS cards
-│   │   ├── WeSupport.tsx        # Infrastructure pillars (Neural Engine, SDK, Cloud)
-│   │   ├── HowItWorks.tsx       # 3-step horizontal flow section
-│   │   ├── OurCoreFocus.tsx     # Core focus values section
-│   │   ├── FeedbackSection.tsx  # Formspree feedback form with 5-star rating
-│   │   └── Footer.tsx           # 4-column footer with Instagram + TikTok
+│   │   ├── Navbar.tsx           # Floating pill; links to homepage sections
+│   │   ├── Footer.tsx           # light/dark variants
+│   │   ├── Logo.tsx
+│   │   ├── ScrollToTop.tsx      # Scrolls to #hash target or top on navigation
+│   │   └── home/                # Homepage sections
+│   │       ├── shared.tsx       # Contact constants, Reveal, Eyebrow, buttons
+│   │       ├── Hero.tsx         # HERO_IMAGE_SRC, HERO_LOOP_SRC, FILM_YOUTUBE_ID
+│   │       ├── Problem.tsx
+│   │       ├── HowItWorks.tsx   # 4 steps; `clip` per step, SVG fallback animations
+│   │       ├── WhyMbyte.tsx
+│   │       ├── Platform.tsx     # One system → three bodies diagram
+│   │       ├── Demos.tsx        # PROTOTYPE (Shorts) + SIMULATION YouTube lists
+│   │       └── ContactCTA.tsx
 │   └── pages/
-│       ├── LandingPage.tsx          # Composes all landing sections
-│       ├── DocsPage.tsx             # SDK track selector page
-│       ├── ArduinoLibraryDocsPage.tsx # 10-section Arduino library docs
-│       └── AboutPage.tsx            # Mission + Three Pillars page
-└── .env                         # VITE_FORMSPREE_URL=https://formspree.io/f/xnjynboe
+│       ├── LandingPage.tsx
+│       ├── DocsPage.tsx             # Legacy Voice AI SDK
+│       └── ArduinoLibraryDocsPage.tsx
 ```
 
 ---
@@ -112,10 +92,10 @@ mbyte---ai-robot-brain-paas/
 
 | Path | Component | Notes |
 |---|---|---|
-| `/` | `LandingPage` | Hero + all landing sections |
-| `/docs` | `DocsPage` | SDK track selector (Arduino IDE / Python / ROS) |
-| `/docs/arduino-library` | `ArduinoLibraryDocsPage` | Full 10-section Arduino library docs |
-| `/about` | `AboutPage` | Mission statement + Three Pillars |
+| `/` | `LandingPage` | Light theme |
+| `/docs` | `DocsPage` | Legacy, footer link "Developers" only |
+| `/docs/arduino-library` | `ArduinoLibraryDocsPage` | Legacy |
+| `/autopilot`, `/about`, `*` | redirect → `/` | Retired Oct 2026 |
 
 ---
 
@@ -123,38 +103,14 @@ mbyte---ai-robot-brain-paas/
 
 ### LandingPage (`/`)
 
-Section order (top → bottom):
-
-1. **HeroBanner** — full-screen `<video>` (`/hero_banner.mp4`)
-   - H1: "Redefining Indoor Autonomy with Edge AI" (3-line Orbitron, last line gradient)
-   - Subtitle: "We build Edge AI autopilot systems for indoor mobility, starting with self-driving wheelchairs for hospitals, airports, and malls."
-   - Tagline: *"You build the body, we provide the brain."*
-   - CTA button: "See Our Flagship" → scrolls to `#mobility`
-
-2. **FlagshipMobility** (`id="mobility"`) — autonomous wheelchair MVP showcase
-   - Badge: "Flagship Product · MVP In Development"
-   - H2: "Autonomous Wheelchair System"
-   - Two-column card: left = description + environment pills + status; right = 4 feature cards
-   - Feature cards: LiDAR SLAM Navigation (violet), On-Device Edge AI (blue), Obstacle Avoidance (emerald), Fleet Dashboard (amber)
-   - CTA: "Partner with us" → `mailto:mbyte2026@gmail.com`
-
-3. **CoreBrainModules** (`id="core-brain"`) — Voice PaaS developer access
-   - Badge: "For Developers"
-   - H2: "The Unified Cognitive Layer"
-   - Subtitle: "The same AI infrastructure powering our autonomous systems — available to developers building any voice-enabled robot or connected device."
-   - 3 cards: AI Communication (active → dashboard.mbyte.my), AI Image (Coming Soon), ML/DL (Coming Soon)
-
-4. **WeSupport** — infrastructure pillars (Neural Engine / violet, SDK Integration / blue, Cloud Intelligence / teal)
-
-5. **HowItWorks** — 3-step horizontal flow with connectors
-
-6. **OurCoreFocus** — core focus values
-
-7. **FeedbackSection** — Formspree form + 5-star rating
-
-8. **Footer**
-
----
+1. **Hero** — "Self-driving indoor mobility." + Partner / Investment CTAs; concept image with "Watch the film" (YouTube `cZkbTn7aY0Q`)
+2. **Problem** (`Problem`) — caregiver shortage, mobility friction; 805,509 PWD + 2.6M aged 65+ (DOSM 2024)
+3. **How it works** (`#how-it-works`) — Map · Detect · Navigate · Move
+4. **Why Mbyte** — context-aware AI, no IT work, no upfront cost (RaaS), dignity
+5. **Platform** (`#platform`) — Wheelchair (Now · In development), Passenger Pod (Next), Shopping Pod (Next)
+6. **Demos** (`#demos`) — prototype Shorts `nErha_yIe4M`, `-R_qoC6G1cI`; simulation `qK0F5SAb7Xg`, `2M_RCnrJXfY`
+7. **Contact** (`#contact`) — Partner with us / Contact for investment (mailto with subject)
+8. **Footer** (light)
 
 ### DocsPage (`/docs`)
 
@@ -238,66 +194,13 @@ mbyte.run()                        // call once in loop(), runs forever internal
 
 ---
 
-### AboutPage (`/about`)
-
-- Badge: "Who We Are"
-- H1: "Our Mission" (Orbitron)
-- Slogan: *"You build the body, we provide the brain."* (violet gradient text)
-- Three narrative paragraphs about robots / kiosks / connected devices
-- **Three Pillars of Machine Intelligence** grid:
-  - **HEAR** (violet) — real-time audio streaming, neural speech engine
-  - **REMEMBER** (blue) — persistent long-term memory, contextual personality
-  - **ACT** (emerald) — spatial reasoning → motor control
-
----
-
-## Components
-
-### Navbar
-
-- Fixed, top-center: `fixed top-5 left-1/2 -translate-x-1/2 z-50`
-- Glass style: `bg-black/40 backdrop-blur-xl border border-white/10 rounded-full max-w-xl`
-- Logo: `Link to="/"` → `<img src="/img_rb.png">` (w-12 h-12) with violet glow
-- Links: `NavLink` to `/docs` (Documentation) and `/about` (About Us)
-
-### FlagshipMobility
-
-- `id="mobility"` — hero CTA scrolls here
-- Large glassmorphic card with top gradient accent bar
-- Left column: description, environment pills (Hospitals / Airports / Shopping Malls / Exhibition Halls), status badge
-- Right column: 4 feature cards with per-card colour accent (violet / blue / emerald / amber)
-- "Partner with us" → `mailto:mbyte2026@gmail.com?subject=Partnership Inquiry`
-
-### CoreBrainModules
-
-- `id="core-brain"`
-- Badge: "For Developers"
-- H2: "The Unified Cognitive Layer"
-- Card 1 — **AI Communication** (active): `href="https://dashboard.mbyte.my/"` — hover lifts, blue glow
-- Card 2 — **AI Image** (Coming Soon): `cursor-not-allowed opacity-65`, amber badge
-- Card 3 — **ML / Deep Learning** (Coming Soon): same treatment
-
-### FeedbackSection
-
-- Formspree POST via `fetch()` to `import.meta.env.VITE_FORMSPREE_URL`
-- `useState` for `rating` (0–5) and `hoveredStar`
-- `AnimatePresence` swaps form ↔ success message on submit
-
-### Footer
-
-- 4 columns: Company · Product · Developers · Community
-- Community: Instagram + TikTok only
-  - Instagram: `https://www.instagram.com/mbyte.3d?igsh=MWlrbml3dzRicGV4dw==`
-  - TikTok: `https://www.tiktok.com/@mbyte11?_r=1&_t=ZS-96yMYV49BQ5`
-- Copyright: `© 2026 Mbyte Technologies. All rights reserved.`
-
 ---
 
 ## Environment Variables
 
 | Variable | Value |
 |---|---|
-| `VITE_FORMSPREE_URL` | `https://formspree.io/f/xnjynboe` |
+| `VITE_FORMSPREE_URL` | `https://formspree.io/f/xnjynboe` (currently unused — the feedback form was removed) |
 
 Declare in `src/vite-env.d.ts`:
 
@@ -317,7 +220,6 @@ interface ImportMeta {
 - **Animation import:** use `motion/react`, not `framer-motion`
 - **Tailwind v4:** uses `@import "tailwindcss"` + `@theme {}` — there is no `tailwind.config.js`
 - **Vite env vars:** must have `VITE_` prefix; `import.meta.env` requires the `vite-env.d.ts` declaration
-- **WeSupport.tsx:** requires `import React from 'react'` (uses `React.CSSProperties`)
 - **Scroll animations:** always use `viewport={{ once: true }}` to prevent re-triggering
 - **Arduino partition scheme:** "Huge APP" is mandatory — the default causes a "Sketch too big" compile error
-- **Coming Soon cards:** use `cursor-not-allowed opacity-65 select-none` — no hover effects, amber badge top-right
+- **Placeholder animations:** the How-it-works visuals are pure SVG/SMIL — set a step's `clip` to swap in a video

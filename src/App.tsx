@@ -3,13 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ScrollToTop from './components/ScrollToTop';
 import LandingPage from './pages/LandingPage';
-import AutopilotPage from './pages/AutopilotPage';
 import DocsPage from './pages/DocsPage';
-import AboutPage from './pages/AboutPage';
 import ArduinoLibraryDocsPage from './pages/ArduinoLibraryDocsPage';
 
 export default function App() {
@@ -19,10 +17,13 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/"                     element={<LandingPage />} />
-        <Route path="/autopilot"            element={<AutopilotPage />} />
+        {/* Legacy Voice AI developer docs — not in the navbar, linked from the footer only */}
         <Route path="/docs"                 element={<DocsPage />} />
         <Route path="/docs/arduino-library" element={<ArduinoLibraryDocsPage />} />
-        <Route path="/about"                element={<AboutPage />} />
+        {/* Retired pages: send old links to the homepage */}
+        <Route path="/autopilot"            element={<Navigate to="/" replace />} />
+        <Route path="/about"                element={<Navigate to="/" replace />} />
+        <Route path="*"                     element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );

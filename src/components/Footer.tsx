@@ -1,22 +1,43 @@
 import React from 'react';
+import { PARTNER_MAILTO, INVEST_MAILTO, CONTACT_EMAIL } from './home/shared';
 
-interface FooterLinkProps {
-  href: string;
-  children: React.ReactNode;
-}
+type Variant = 'dark' | 'light';
 
-interface SocialRowLinkProps {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-}
+const THEME: Record<Variant, {
+  footer: string; name: string; heading: string; muted: string; faint: string;
+  link: string; divider: string; iconBox: string; logo: string; logoImg: string;
+}> = {
+  dark: {
+    footer:  'bg-black border-t border-white/[0.08]',
+    name:    'text-white',
+    heading: 'text-white/30',
+    muted:   'text-white/40',
+    faint:   'text-white/20',
+    link:    'text-white/40 hover:text-white',
+    divider: 'border-white/[0.06]',
+    iconBox: 'bg-white/[0.04] border-white/[0.07] group-hover:bg-white/[0.09] group-hover:border-white/15',
+    logo:    '/img_rb.png',
+    logoImg: 'drop-shadow-[0_0_6px_rgba(139,92,246,0.4)]',
+  },
+  light: {
+    footer:  'bg-white border-t border-neutral-200',
+    name:    'text-neutral-950',
+    heading: 'text-neutral-400',
+    muted:   'text-neutral-500',
+    faint:   'text-neutral-400',
+    link:    'text-neutral-500 hover:text-neutral-950',
+    divider: 'border-neutral-200',
+    iconBox: 'bg-neutral-50 border-neutral-200 group-hover:border-neutral-400',
+    logo:    '/logo-mark.png',
+    logoImg: '',
+  },
+};
 
-export default function Footer() {
+export default function Footer({ variant = 'dark' }: { variant?: Variant }) {
+  const t = THEME[variant];
+
   return (
-    <footer className="relative bg-black border-t border-white/[0.08] pt-16 pb-8 px-6">
-      {/* Very subtle top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
-
+    <footer className={`relative pt-16 pb-8 px-6 ${t.footer}`}>
       <div className="max-w-6xl mx-auto">
         {/* Main grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
@@ -24,67 +45,48 @@ export default function Footer() {
           {/* Col 1: Branding */}
           <div className="sm:col-span-2 lg:col-span-1 flex flex-col gap-5">
             <div className="flex items-center gap-3">
-              <img
-                src="/img_rb.png"
-                alt="Mbyte"
-                className="w-10 h-10 object-contain drop-shadow-[0_0_6px_rgba(139,92,246,0.4)]"
-              />
-              <span className="text-xl font-black tracking-tight text-white">Mbyte</span>
+              <img src={t.logo} alt="Mbyte" className={`w-10 h-10 object-contain ${t.logoImg}`} />
+              <span className={`text-xl font-black tracking-tight ${t.name}`}>Mbyte</span>
             </div>
             <div className="flex flex-col gap-1.5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-                BUILD YOUR AI ROBOT
+              <p className={`text-[10px] font-bold uppercase tracking-[0.2em] ${t.heading}`}>
+                Self-driving indoor mobility
               </p>
-              <p className="text-sm text-white/40 leading-relaxed">
-                You build the body, we provide the brain.
+              <p className={`text-sm leading-relaxed ${t.muted}`}>
+                Mbyte Technologies Sdn Bhd · Pahang, Malaysia
               </p>
             </div>
-            <p className="text-xs text-white/20">© 2026 Mbyte Technologies.</p>
           </div>
 
           {/* Col 2: Explore */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-              Explore
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <FooterLink href="#">Home</FooterLink>
-              <FooterLink href="#docs">Documentation</FooterLink>
-              <FooterLink href="#about">About Us</FooterLink>
-            </nav>
-          </div>
+          <FooterColumn title="Explore" t={t}>
+            <FooterLink href="/#how-it-works" t={t}>How it works</FooterLink>
+            <FooterLink href="/#platform" t={t}>Platform</FooterLink>
+            <FooterLink href="/#demos" t={t}>Demos</FooterLink>
+            <FooterLink href="/docs" t={t}>Developers</FooterLink>
+          </FooterColumn>
 
-          {/* Col 3: Platform */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-              Platform
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <FooterLink href="#core-brain">AI Communication</FooterLink>
-              <FooterLink href="#">SDK Integration</FooterLink>
-              <FooterLink href="#">Neural Engine</FooterLink>
-            </nav>
-          </div>
+          {/* Col 3: Contact */}
+          <FooterColumn title="Contact" t={t}>
+            <FooterLink href={PARTNER_MAILTO} t={t}>Partner with us</FooterLink>
+            <FooterLink href={INVEST_MAILTO} t={t}>Contact for investment</FooterLink>
+            <FooterLink href={`mailto:${CONTACT_EMAIL}`} t={t}>{CONTACT_EMAIL}</FooterLink>
+          </FooterColumn>
 
           {/* Col 4: Community */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
-              Community
-            </h3>
-            <div className="flex flex-col gap-3">
-              <SocialRowLink href="https://www.instagram.com/mbyte.3d?igsh=MWlrbml3dzRicGV4dw==" icon={<InstagramIcon />} label="Instagram" />
-              <SocialRowLink href="https://www.tiktok.com/@mbyte11?_r=1&_t=ZS-96yMYV49BQ5" icon={<TikTokIcon />} label="TikTok" />
-              <SocialRowLink href="https://www.linkedin.com/company/mbyte-technologies-my/?viewAsMember=true" icon={<LinkedInIcon />} label="LinkedIn" />
-            </div>
-          </div>
+          <FooterColumn title="Community" t={t}>
+            <SocialRowLink href="https://www.linkedin.com/company/mbyte-technologies-my/?viewAsMember=true" icon={<LinkedInIcon />} label="LinkedIn" t={t} />
+            <SocialRowLink href="https://www.instagram.com/mbyte.3d?igsh=MWlrbml3dzRicGV4dw==" icon={<InstagramIcon />} label="Instagram" t={t} />
+            <SocialRowLink href="https://www.tiktok.com/@mbyte11?_r=1&_t=ZS-96yMYV49BQ5" icon={<TikTokIcon />} label="TikTok" t={t} />
+          </FooterColumn>
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-white/20 text-xs">
-          <span>All rights reserved. Mbyte Technologies 2026.</span>
+        <div className={`border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs ${t.divider} ${t.faint}`}>
+          <span>© 2026 Mbyte Technologies Sdn Bhd. All rights reserved.</span>
           <div className="flex gap-5">
-            <FooterLink href="#">Privacy Policy</FooterLink>
-            <FooterLink href="#">Terms of Service</FooterLink>
+            <FooterLink href="#" t={t}>Privacy Policy</FooterLink>
+            <FooterLink href="#" t={t}>Terms of Service</FooterLink>
           </div>
         </div>
       </div>
@@ -94,24 +96,34 @@ export default function Footer() {
 
 /* ─── Sub-components ─────────────────────────────────────────────────────── */
 
-function FooterLink({ href, children }: FooterLinkProps) {
+type Theme = (typeof THEME)[Variant];
+
+function FooterColumn({ title, t, children }: { title: string; t: Theme; children: React.ReactNode }) {
   return (
-    <a
-      href={href}
-      className="text-sm text-white/40 hover:text-white transition-colors duration-200"
-    >
+    <div className="flex flex-col gap-4">
+      <h3 className={`text-[10px] font-bold uppercase tracking-[0.2em] ${t.heading}`}>{title}</h3>
+      <nav className="flex flex-col gap-3">{children}</nav>
+    </div>
+  );
+}
+
+function FooterLink({ href, t, children }: { href: string; t: Theme; children: React.ReactNode }) {
+  return (
+    <a href={href} className={`text-sm transition-colors duration-200 ${t.link}`}>
       {children}
     </a>
   );
 }
 
-function SocialRowLink({ href, icon, label }: SocialRowLinkProps) {
+function SocialRowLink({ href, icon, label, t }: { href: string; icon: React.ReactNode; label: string; t: Theme }) {
   return (
     <a
       href={href}
-      className="flex items-center gap-3 group text-white/40 hover:text-white transition-colors duration-200"
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`flex items-center gap-3 group transition-colors duration-200 ${t.link}`}
     >
-      <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center group-hover:bg-white/[0.09] group-hover:border-white/15 transition-all duration-200">
+      <div className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all duration-200 ${t.iconBox}`}>
         {icon}
       </div>
       <span className="text-sm font-medium">{label}</span>
