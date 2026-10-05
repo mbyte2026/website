@@ -95,8 +95,9 @@ function DemoCard({ demo }: { demo: Demo }) {
 /** Shows the YouTube thumbnail and only loads the player on click. */
 function DemoPlayer({ demo }: { demo: Demo }) {
   const [playing, setPlaying] = useState(false);
-  // Shorts have a vertical thumbnail at oar2.jpg; regular videos use hqdefault.
-  const thumb = `https://i.ytimg.com/vi/${demo.id}/${demo.vertical ? 'oar2' : 'hqdefault'}.jpg`;
+  // maxresdefault is the thumbnail chosen in YouTube Studio. For Shorts it's pillarboxed,
+  // and object-cover in the 9:16 frame crops the black bars away.
+  const thumb = `https://i.ytimg.com/vi/${demo.id}/${demo.vertical ? 'maxresdefault' : 'hqdefault'}.jpg`;
 
   return (
     <div className={`relative rounded-2xl overflow-hidden bg-neutral-200 ${demo.vertical ? 'aspect-[9/16]' : 'aspect-video'}`}>
